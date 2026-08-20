@@ -7,50 +7,46 @@ import { auth } from "@/lib/auth";
 
 const apiUrl = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:4000";
 
-async function postAuth(path: string, body: object) {
-  const controller = new AbortController();
-  const timer = setTimeout(() => controller.abort(), 20000);
-  try {
-    const response = await fetch(`${apiUrl}${path}`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(body),
-      signal: controller.signal,
-    });
-    return response;
-  } finally {
-    clearTimeout(timer);
-  }
-}
-
-export default function LoginPage() {
+export default function SignupPage() {
   const router = useRouter();
-  const [email, setEmail] = useState("sample");
-  const [password, setPassword] = useState("sample");
+  const [email, setEmail] = useState("");
+  const [name, setName] = useState("");
+  const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const handleLogin = async (event: FormEvent) => {
+  const handleSignup = async (event: FormEvent) => {
     event.preventDefault();
     setError("");
     setLoading(true);
     try {
-      const response = await postAuth("/api/auth/login", { email, password });
+      const controller = new AbortController();
+      const timer = setTimeout(() => controller.abort(), 20000);
+      const response = await fetch(`${apiUrl}/api/auth/signup`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password, name: name || email }),
+        signal: controller.signal,
+      });
+      clearTimeout(timer);
 
+      if (response.status === 409) {
+        throw new Error("That ID is already taken. Try signing in.");
+      }
       if (!response.ok) {
-        throw new Error("Invalid ID or password.");
+        throw new Error("Could not create the account.");
       }
 
       const data = (await response.json()) as { token: string };
       auth.setToken(data.token);
       router.push("/dashboard");
-    } catch (loginError) {
-      if (loginError instanceof DOMException && loginError.name === "AbortError") {
-        setError("Sign in timed out. The API is still starting or is not connected to the database.");
-      } else if (loginError instanceof TypeError) {
-        setError("Cannot reach the API. Check that my-erp-api is live and DATABASE_URL is set.");
+    } catch (signupError) {
+      if (signupError instanceof DOMException && signupError.name === "AbortError") {
+        setError("Signup timed out. The API is still starting or is not connected to the database.");
+      } else if (signupError instanceof TypeError) {
+        setError("Cannot reach the API. Add DATABASE_URL on my-erp-api in Render.");
       } else {
-        setError(loginError instanceof Error ? loginError.message : "Login failed.");
+        setError(signupError instanceof Error ? signupError.message : "Signup failed.");
       }
     } finally {
       setLoading(false);
@@ -71,35 +67,39 @@ export default function LoginPage() {
         </div>
         <div className="relative z-10 max-w-md animate-rise">
           <h1 className="font-[family-name:var(--font-display)] text-4xl leading-tight font-semibold">
-            Secure access to your enterprise workspace
+            Create your workspace access
           </h1>
           <p className="mt-4 text-base leading-relaxed text-white/80">
-            Sign in to manage operations across inventory, finance, procurement,
-            and service modules.
+            Register an ID and password, then continue into the ERP modules.
           </p>
         </div>
-        <p className="relative z-10 text-sm text-white/65">
-          Built for operators, finance teams, and administrators.
-        </p>
       </section>
 
       <section className="flex items-center justify-center bg-[var(--background)] px-6 py-12">
         <form
-          onSubmit={handleLogin}
+          onSubmit={handleSignup}
           className="animate-rise w-full max-w-md border border-[var(--line)] bg-[var(--surface)] p-8"
         >
-          <p className="mb-2 font-[family-name:var(--font-display)] text-2xl font-semibold text-[var(--brand-deep)] lg:hidden">
-            My ERP
-          </p>
           <h2 className="font-[family-name:var(--font-display)] text-3xl font-semibold text-[var(--foreground)]">
-            Sign in
+            Sign up
           </h2>
           <p className="mt-2 text-sm text-[var(--muted)]">
-            Use ID <span className="font-medium text-[var(--foreground)]">sample</span> and password{" "}
-            <span className="font-medium text-[var(--foreground)]">sample</span>.
+            Choose an ID and password to create an account.
           </p>
 
           <div className="mt-8 space-y-4">
+            <label className="block">
+              <span className="mb-1.5 block text-sm font-medium text-[var(--foreground)]">
+                Name
+              </span>
+              <input
+                type="text"
+                value={name}
+                onChange={(event) => setName(event.target.value)}
+                className="w-full border border-[var(--line)] bg-white px-3 py-2.5 outline-none transition focus:border-[var(--accent)]"
+                placeholder="Your name"
+              />
+            </label>
             <label className="block">
               <span className="mb-1.5 block text-sm font-medium text-[var(--foreground)]">
                 ID
@@ -107,14 +107,12 @@ export default function LoginPage() {
               <input
                 type="text"
                 required
-                autoComplete="username"
                 value={email}
                 onChange={(event) => setEmail(event.target.value)}
-                className="w-full border border-[var(--line)] bg-white px-3 py-2.5 text-[var(--foreground)] outline-none transition focus:border-[var(--accent)]"
-                placeholder="sample"
+                className="w-full border border-[var(--line)] bg-white px-3 py-2.5 outline-none transition focus:border-[var(--accent)]"
+                placeholder="your-id"
               />
             </label>
-
             <label className="block">
               <span className="mb-1.5 block text-sm font-medium text-[var(--foreground)]">
                 Password
@@ -122,34 +120,27 @@ export default function LoginPage() {
               <input
                 type="password"
                 required
+                minLength={4}
                 value={password}
                 onChange={(event) => setPassword(event.target.value)}
-                className="w-full border border-[var(--line)] bg-white px-3 py-2.5 text-[var(--foreground)] outline-none transition focus:border-[var(--accent)]"
+                className="w-full border border-[var(--line)] bg-white px-3 py-2.5 outline-none transition focus:border-[var(--accent)]"
                 placeholder="••••••••"
               />
             </label>
-
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-[var(--brand)] px-4 py-3 text-sm font-semibold text-white transition duration-300 hover:bg-[var(--brand-deep)] disabled:opacity-50"
+              className="w-full bg-[var(--brand)] px-4 py-3 text-sm font-semibold text-white transition hover:bg-[var(--brand-deep)] disabled:opacity-50"
             >
-              {loading ? "Signing in..." : "Sign in to My ERP"}
+              {loading ? "Creating account..." : "Create account"}
             </button>
-
-            {error ? (
-              <p className="text-sm text-[var(--danger)]">{error}</p>
-            ) : null}
+            {error ? <p className="text-sm text-[var(--danger)]">{error}</p> : null}
           </div>
 
           <p className="mt-6 text-sm text-[var(--muted)]">
-            New here?{" "}
-            <Link href="/signup" className="font-medium text-[var(--brand)] hover:underline">
-              Create an account
-            </Link>
-            {" · "}
-            <Link href="/" className="font-medium text-[var(--brand)] hover:underline">
-              Back to landing
+            Already have an account?{" "}
+            <Link href="/login" className="font-medium text-[var(--brand)] hover:underline">
+              Sign in
             </Link>
           </p>
         </form>

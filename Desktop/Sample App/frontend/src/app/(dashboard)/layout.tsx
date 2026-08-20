@@ -1,7 +1,7 @@
 "use client";
 
-import { useEffect } from "react";
-import { usePathname, useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import Sidebar from "@/components/Sidebar";
 import { auth } from "@/lib/auth";
 
@@ -11,17 +11,23 @@ export default function DashboardLayout({
   children: React.ReactNode;
 }) {
   const router = useRouter();
-  const pathname = usePathname();
-  const token = typeof window === "undefined" ? null : auth.getToken();
+  const [allowed, setAllowed] = useState(false);
 
   useEffect(() => {
-    if (!token && pathname !== "/login") {
+    const token = auth.getToken();
+    if (!token) {
       router.replace("/login");
+      return;
     }
-  }, [pathname, router, token]);
+    setAllowed(true);
+  }, [router]);
 
-  if (!token) {
-    return <div className="p-6 text-[var(--muted)]">Loading workspace...</div>;
+  if (!allowed) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-[var(--background)] text-[var(--muted)]">
+        Redirecting to sign in...
+      </div>
+    );
   }
 
   return (

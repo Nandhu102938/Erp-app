@@ -34,10 +34,10 @@ export default function Home() {
               Enter workspace
             </Link>
             <Link
-              href="/dashboard"
+              href="/signup"
               className="border border-white/50 px-6 py-3 text-sm font-semibold transition duration-300 hover:bg-white/10"
             >
-              Open dashboard
+              Sign up
             </Link>
           </div>
         </section>
