@@ -1,0 +1,82 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id           String        @id @default(cuid())
+  email        String        @unique
+  name         String
+  passwordHash String
+  role         String        @default("ADMIN")
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  entries      ModuleEntry[]
+}
+
+model Product {
+  id          String   @id @default(cuid())
+  sku         String   @unique
+  name        String
+  category    String
+  unitPrice   Float    @default(0)
+  costPrice   Float    @default(0)
+  stockQty    Int      @default(0)
+  reorderLevel Int     @default(10)
+  warehouse   String   @default("Main Warehouse")
+  status      String   @default("active")
+  description String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Customer {
+  id        String   @id @default(cuid())
+  code      String   @unique
+  name      String
+  email     String?
+  phone     String?
+  type      String   @default("retail")
+  creditLimit Float  @default(0)
+  status    String   @default("active")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Supplier {
+  id        String   @id @default(cuid())
+  code      String   @unique
+  name      String
+  email     String?
+  phone     String?
+  leadTimeDays Int   @default(7)
+  status    String   @default("active")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model ModuleEntry {
+  id          String   @id @default(cuid())
+  module      String
+  operation   String   @default("general")
+  title       String
+  description String?
+  amount      Float    @default(0)
+  quantity    Float    @default(0)
+  reference   String?
+  partyName   String?
+  status      String   @default("draft")
+  metadata    Json?
+  createdById String?
+  createdBy   User?    @relation(fields: [createdById], references: [id])
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([module, operation])
+}

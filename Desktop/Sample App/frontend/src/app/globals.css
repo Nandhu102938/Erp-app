@@ -1,0 +1,93 @@
+@import "tailwindcss";
+
+:root {
+  --background: #edf2f4;
+  --foreground: #12262b;
+  --brand: #0b4f4a;
+  --brand-deep: #073833;
+  --accent: #2f8f86;
+  --surface: #f8fbfb;
+  --muted: #5d7378;
+  --line: #c9d8db;
+  --danger: #b42318;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-brand: var(--brand);
+  --color-brand-deep: var(--brand-deep);
+  --color-accent: var(--accent);
+  --color-surface: var(--surface);
+  --color-muted: var(--muted);
+  --color-line: var(--line);
+  --color-danger: var(--danger);
+  --font-sans: var(--font-body);
+  --font-display: var(--font-display);
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-body), sans-serif;
+}
+
+@keyframes rise-in {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes drift {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.animate-rise {
+  animation: rise-in 700ms ease-out both;
+}
+
+.animate-rise-delay {
+  animation: rise-in 800ms ease-out 120ms both;
+}
+
+.animate-fade {
+  animation: fade-in 900ms ease-out both;
+}
+
+.hero-atmosphere {
+  background-image:
+    linear-gradient(115deg, rgba(7, 56, 51, 0.88) 12%, rgba(11, 79, 74, 0.72) 48%, rgba(18, 38, 43, 0.55) 100%),
+    url("https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?auto=format&fit=crop&w=2000&q=80");
+  background-size: cover;
+  background-position: center;
+  animation: fade-in 1s ease-out both;
+}
+
+.login-atmosphere {
+  background-image:
+    linear-gradient(135deg, #073833 0%, #0b4f4a 42%, #1a3a40 100%);
+  background-size: 180% 180%;
+  animation: drift 16s ease-in-out infinite;
+}
