@@ -5,7 +5,7 @@ export default function Home() {
     <main className="hero-atmosphere relative min-h-screen overflow-hidden text-white">
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(47,143,134,0.22),transparent_42%)]" />
 
-      <div className="relative z-10 mx-auto flex min-h-screen w-full max-w-6xl flex-col justify-between px-6 py-8 md:px-10 md:py-10">
+      <div className="relative z-10 mx-auto flex min-h-screen w-full max-w-6xl flex-col justify-between px-4 py-6 sm:px-6 md:px-10 md:py-10">
         <header className="animate-fade flex items-center justify-between">
           <p className="font-[family-name:var(--font-display)] text-2xl font-semibold tracking-tight md:text-3xl">
             My ERP
@@ -19,7 +19,7 @@ export default function Home() {
         </header>
 
         <section className="max-w-3xl pb-16 pt-20 md:pb-24 md:pt-10">
-          <h1 className="animate-rise font-[family-name:var(--font-display)] text-4xl leading-tight font-semibold tracking-tight md:text-6xl md:leading-[1.05]">
+          <h1 className="animate-rise font-[family-name:var(--font-display)] text-3xl leading-tight font-semibold tracking-tight sm:text-4xl md:text-6xl md:leading-[1.05]">
             Run every operation from one command center
           </h1>
           <p className="animate-rise-delay mt-5 max-w-xl text-base leading-relaxed text-white/85 md:text-lg">

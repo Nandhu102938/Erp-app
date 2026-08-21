@@ -239,17 +239,17 @@ export default function ModuleWorkspace({ moduleKey }: ModuleWorkspaceProps) {
 
   return (
     <section className="space-y-6">
-      <header className="border border-[var(--line)] bg-white p-5">
+      <header className="border border-[var(--line)] bg-white p-4 sm:p-5">
         <p className="text-xs font-semibold tracking-[0.16em] text-[var(--accent)] uppercase">
           Module workspace
         </p>
-        <h1 className="mt-1 font-[family-name:var(--font-display)] text-3xl font-semibold text-[var(--brand-deep)]">
+        <h1 className="mt-1 font-[family-name:var(--font-display)] text-2xl font-semibold text-[var(--brand-deep)] sm:text-3xl">
           {definition.label}
         </h1>
         <p className="mt-2 max-w-3xl text-sm leading-relaxed text-[var(--muted)]">
           {definition.summary}
         </p>
-        <ul className="mt-4 grid gap-2 md:grid-cols-3">
+        <ul className="mt-4 grid gap-2 sm:grid-cols-2 md:grid-cols-3">
           {definition.highlights.map((item) => (
             <li
               key={item}
@@ -261,13 +261,13 @@ export default function ModuleWorkspace({ moduleKey }: ModuleWorkspaceProps) {
         </ul>
       </header>
 
-      <div className="flex flex-wrap gap-2">
+      <div className="-mx-3 flex gap-2 overflow-x-auto px-3 pb-1 sm:mx-0 sm:flex-wrap sm:px-0">
         {operations.map((item) => (
           <button
             key={item.key}
             type="button"
             onClick={() => setActiveOp(item.key)}
-            className={`px-4 py-2 text-sm font-medium transition ${
+            className={`shrink-0 px-4 py-2 text-sm font-medium whitespace-nowrap transition ${
               activeOp === item.key
                 ? "bg-[var(--brand)] text-white"
                 : "border border-[var(--line)] bg-white text-[var(--foreground)] hover:border-[var(--accent)]"

@@ -9,7 +9,7 @@ export default function DashboardPage() {
         <p className="text-xs font-semibold tracking-[0.16em] text-[var(--accent)] uppercase">
           Operations overview
         </p>
-        <h1 className="mt-1 font-[family-name:var(--font-display)] text-3xl font-semibold text-[var(--brand-deep)]">
+        <h1 className="mt-1 font-[family-name:var(--font-display)] text-2xl font-semibold text-[var(--brand-deep)] sm:text-3xl">
           My ERP Dashboard
         </h1>
         <p className="mt-2 max-w-2xl text-sm text-[var(--muted)]">
@@ -18,7 +18,7 @@ export default function DashboardPage() {
         </p>
       </header>
 
-      <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
+      <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
         {modules.map((moduleItem) => {
           const definition = moduleDefinitions[moduleItem.key];
           return (
